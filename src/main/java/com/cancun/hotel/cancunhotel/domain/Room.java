@@ -18,7 +18,7 @@ public class Room {
     private Long id;
 
     @Column
-    private Long roomNumber;
+    private Integer roomNumber;
 
     @Column
     private String description;
