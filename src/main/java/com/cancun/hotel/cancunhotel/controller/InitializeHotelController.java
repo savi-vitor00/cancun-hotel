@@ -1,8 +1,5 @@
 package com.cancun.hotel.cancunhotel.controller;
 
-import com.cancun.hotel.cancunhotel.DTO.CostumerDTO;
-import com.cancun.hotel.cancunhotel.DTO.RoomDTO;
-import com.cancun.hotel.cancunhotel.domain.Room;
 import com.cancun.hotel.cancunhotel.service.InitializeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/initializeHotel")
@@ -30,6 +28,6 @@ public class InitializeHotelController {
             Map<String, List<Object>> hotelInitializeMap = initializeService.insertObjectsForTestingAPIPurpose();
             return ResponseEntity.status(HttpStatus.OK).body(hotelInitializeMap);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Initializaton has already ocurred. Only one room is alowed.");
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Initializaton has already ocurred. Only one room is alowed.");
     }
 }

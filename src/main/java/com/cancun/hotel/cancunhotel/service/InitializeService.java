@@ -8,11 +8,14 @@ import com.cancun.hotel.cancunhotel.repository.CostumerRepository;
 import com.cancun.hotel.cancunhotel.repository.RoomRepository;
 import com.cancun.hotel.cancunhotel.util.DomainToDTOConverter;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class InitializeService {
@@ -48,14 +51,14 @@ public class InitializeService {
         room.setRoomNumber(1);
         room.setDescription("Master Bedroom");
         room = roomRepository.save(room);
-        return (RoomDTO) DomainToDTOConverter.convertObjToDTO(room, new TypeReference<RoomDTO>(){});
+        return (RoomDTO) DomainToDTOConverter.convertObjToDTO(room, RoomDTO.class);
     }
 
     public CostumerDTO initializeCostumer(final String name){
         Costumer costumer = new Costumer();
         costumer.setName(name);
         costumer = costumerRepository.save(costumer);
-        return (CostumerDTO) DomainToDTOConverter.convertObjToDTO(costumer, new TypeReference<CostumerDTO>(){});
+        return (CostumerDTO) DomainToDTOConverter.convertObjToDTO(costumer, CostumerDTO.class);
     }
 
     public Boolean verifyInitialization(){
