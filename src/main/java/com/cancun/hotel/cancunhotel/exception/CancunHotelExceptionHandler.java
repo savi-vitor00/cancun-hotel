@@ -55,6 +55,12 @@ public class CancunHotelExceptionHandler extends ResponseEntityExceptionHandler 
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler(StartDateBeforeTomorrowException.class)
+    protected ResponseEntity handleStartDateBeforeTomorrowException(StartDateBeforeTomorrowException ex) {
+        ApiErrorObject apiError = getApiErrorObject(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
     private ApiErrorObject getApiErrorObject(String errorCode) {
         EnumCustomExceptionControl errorControl = EnumCustomExceptionControl.getByErrorCode(errorCode);
         ApiErrorObject apiError = new ApiErrorObject();

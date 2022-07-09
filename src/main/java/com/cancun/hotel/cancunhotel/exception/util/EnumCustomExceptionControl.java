@@ -15,7 +15,8 @@ public enum EnumCustomExceptionControl {
     PARAMETERS_NOT_VALID    ("PARAMETERS_NOT_VALID", "Parameters not valid", "Null parameters are not allowed", HttpStatus.NOT_ACCEPTABLE),
     PERIOD_NOT_AVAILABLE    ("PERIOD_NOT_AVAILABLE", "Period not available", "Given date conflicts with another booking.", HttpStatus.NOT_ACCEPTABLE),
     THIRTY_DAYS_ADVANCE     ("THIRTY_DAYS_ADVANCE", "Advance booking out of range", "Booking with a 30 days advance is not permitted.", HttpStatus.NOT_ACCEPTABLE),
-    THREE_PLUS_DAYS         ("THREE_PLUS_DAYS", "Booking range not permited", "Booking more than 3 days in a row is not permitted.", HttpStatus.NOT_ACCEPTABLE);
+    THREE_PLUS_DAYS         ("THREE_PLUS_DAYS", "Booking range not permitted", "Booking more than 3 days in a row is not permitted.", HttpStatus.NOT_ACCEPTABLE),
+    START_DATE_BEF_TOMOR    ("START_DATE_BEF_TOMOR", "Start date is not valid", "It's not permitted to book stays for today or before", HttpStatus.NOT_ACCEPTABLE);
 
     private String errorCode;
     private String errorDescription;

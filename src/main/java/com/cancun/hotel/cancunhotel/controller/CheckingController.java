@@ -44,10 +44,6 @@ public class CheckingController {
     @GetMapping("/listByDates")
     public ResponseEntity listRoomAvailabilityByDates(@RequestBody BookedRoomVO bookedRoomVO){
         List<BookedRoomDTO> periodsFound = checkingService.listAvailabilityByDates(bookedRoomVO);
-        ResponseEntity.BodyBuilder status = ResponseEntity.status(HttpStatus.OK);
-        if(periodsFound.isEmpty()){
-            return status.body("No booking was found for the given period.");
-        }
-        return status.body(periodsFound);
+        return ResponseEntity.status(HttpStatus.OK).body(periodsFound);
     }
 }

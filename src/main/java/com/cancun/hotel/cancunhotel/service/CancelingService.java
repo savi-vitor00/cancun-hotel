@@ -17,21 +17,27 @@ public class CancelingService {
 
     private final BookedRoomRepository bookedRoomRepository;
     private final CustomerRepository customerRepository;
+    private final ValidationControlService validationControlService;
 
     @Autowired
-    public CancelingService(BookedRoomRepository bookedRoomRepository, CustomerRepository customerRepository){
+    public CancelingService(BookedRoomRepository bookedRoomRepository, CustomerRepository customerRepository, ValidationControlService validationControlService){
         this.bookedRoomRepository = bookedRoomRepository;
         this.customerRepository = customerRepository;
+        this.validationControlService = validationControlService;
     }
 
     public CustomerDTO cancelAllBookedRoomByUser(final Long customerId){
         Optional<Customer> customer = customerRepository.findById(customerId);
+        validationControlService.verifyCustomerExistence(customer);
         List<BookedRoom> bookedRoomsByCustomer = bookedRoomRepository.findAllByCustomer(customer.get());
+        validationControlService.verifyBookedRoomExistenceByCustomerId(bookedRoomsByCustomer);
         bookedRoomRepository.deleteAll(bookedRoomsByCustomer);
         return (CustomerDTO) DomainToDTOConverter.convertObjToDTO(customer.get(), CustomerDTO.class);
     }
 
     public void cancelBookedRoom(final Long bookedRoomId){
-        bookedRoomRepository.deleteById(bookedRoomId);
+        Optional<BookedRoom> bookedRoom = bookedRoomRepository.findById(bookedRoomId);
+        validationControlService.verifyBookedRoomExistence(bookedRoom);
+        bookedRoomRepository.delete(bookedRoom.get());
     }
 }

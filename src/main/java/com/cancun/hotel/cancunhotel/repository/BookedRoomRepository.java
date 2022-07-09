@@ -25,6 +25,6 @@ public interface BookedRoomRepository extends JpaRepository<BookedRoom, Long> {
     @Query(value = "SELECT b FROM BookedRoom as b " +
             "WHERE (:startDate BETWEEN b.startDate and b.endDate) " +
             "OR (:endDate BETWEEN b.startDate and b.endDate)")
-    Collection<BookedRoom> listUnavailabilityByStartAndEndDates(@Param("startDate")LocalDate startDate,
+    List<BookedRoom> listUnavailabilityByStartAndEndDates(@Param("startDate")LocalDate startDate,
                                                                 @Param("endDate")LocalDate endDate);
 }
