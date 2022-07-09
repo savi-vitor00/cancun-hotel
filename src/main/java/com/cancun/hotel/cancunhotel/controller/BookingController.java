@@ -32,9 +32,9 @@ public class BookingController {
         return ResponseEntity.status(HttpStatus.OK).body(bookedRooms);
     }
 
-    @GetMapping("/costumer/{costumerId}")
-    public ResponseEntity<List<BookedRoomDTO>> listBookingByCostumerId(@PathVariable("costumerId") Long costumerId){
-        List<BookedRoomDTO> bookedRoomsDTO = bookingService.listBookingByCostumerId(costumerId);
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<BookedRoomDTO>> listBookingByCustomerId(@PathVariable("customerId") Long customerId){
+        List<BookedRoomDTO> bookedRoomsDTO = bookingService.listBookingByCustomerId(customerId);
         return ResponseEntity.status(HttpStatus.OK).body(bookedRoomsDTO);
     }
 

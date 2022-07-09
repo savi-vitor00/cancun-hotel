@@ -1,13 +1,12 @@
 package com.cancun.hotel.cancunhotel.service;
 
-import com.cancun.hotel.cancunhotel.DTO.CostumerDTO;
+import com.cancun.hotel.cancunhotel.DTO.CustomerDTO;
 import com.cancun.hotel.cancunhotel.DTO.RoomDTO;
-import com.cancun.hotel.cancunhotel.domain.Costumer;
+import com.cancun.hotel.cancunhotel.domain.Customer;
 import com.cancun.hotel.cancunhotel.domain.Room;
-import com.cancun.hotel.cancunhotel.repository.CostumerRepository;
+import com.cancun.hotel.cancunhotel.repository.CustomerRepository;
 import com.cancun.hotel.cancunhotel.repository.RoomRepository;
 import com.cancun.hotel.cancunhotel.util.DomainToDTOConverter;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,30 +19,30 @@ import java.util.Map;
 @Service
 public class InitializeService {
 
-    private final CostumerRepository costumerRepository;
+    private final CustomerRepository customerRepository;
     private final RoomRepository roomRepository;
 
     @Autowired
-    public InitializeService(CostumerRepository costumerRepository, RoomRepository roomRepository){
-        this.costumerRepository = costumerRepository;
+    public InitializeService(CustomerRepository customerRepository, RoomRepository roomRepository){
+        this.customerRepository = customerRepository;
         this.roomRepository = roomRepository;
     }
 
     public Map<String, List<Object>> insertObjectsForTestingAPIPurpose() {
         Map<String, List<Object>> hotelInitializeMap = new HashMap<String, List<Object>>();
         RoomDTO room = initializeRoom();
-        List<CostumerDTO> costumerList = createCostumers();
+        List<CustomerDTO> customerList = createCustomers();
         hotelInitializeMap.put("Created Room", Arrays.asList(room));
-        hotelInitializeMap.put("Created Costumers", Arrays.asList(costumerList));
+        hotelInitializeMap.put("Created Customers", Arrays.asList(customerList));
         return hotelInitializeMap;
     }
 
-    private List<CostumerDTO> createCostumers() {
-        List<CostumerDTO> costumerList = new ArrayList<>();
-        costumerList.add(initializeCostumer("Jim Halpert"));
-        costumerList.add(initializeCostumer("John Winchester"));
-        costumerList.add(initializeCostumer("Dustin Henderson"));
-        return costumerList;
+    private List<CustomerDTO> createCustomers() {
+        List<CustomerDTO> customerList = new ArrayList<>();
+        customerList.add(initializeCustomer("Jim Halpert"));
+        customerList.add(initializeCustomer("John Winchester"));
+        customerList.add(initializeCustomer("Dustin Henderson"));
+        return customerList;
     }
 
     public RoomDTO initializeRoom(){
@@ -54,11 +53,11 @@ public class InitializeService {
         return (RoomDTO) DomainToDTOConverter.convertObjToDTO(room, RoomDTO.class);
     }
 
-    public CostumerDTO initializeCostumer(final String name){
-        Costumer costumer = new Costumer();
-        costumer.setName(name);
-        costumer = costumerRepository.save(costumer);
-        return (CostumerDTO) DomainToDTOConverter.convertObjToDTO(costumer, CostumerDTO.class);
+    public CustomerDTO initializeCustomer(final String name){
+        Customer customer = new Customer();
+        customer.setName(name);
+        customer = customerRepository.save(customer);
+        return (CustomerDTO) DomainToDTOConverter.convertObjToDTO(customer, CustomerDTO.class);
     }
 
     public Boolean verifyInitialization(){
