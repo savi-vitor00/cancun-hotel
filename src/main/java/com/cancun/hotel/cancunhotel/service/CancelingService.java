@@ -25,6 +25,12 @@ public class CancelingService {
         this.customerRepository = customerRepository;
     }
 
+    public void cancelBookedRoom(final Long bookedRoomId){
+        Optional<BookedRoom> bookedRoom = bookedRoomRepository.findById(bookedRoomId);
+        ValidationControl.verifyBookedRoomExistence(bookedRoom);
+        bookedRoomRepository.delete(bookedRoom.get());
+    }
+
     public CustomerDTO cancelAllBookedRoomByUser(final Long customerId){
         Optional<Customer> customer = customerRepository.findById(customerId);
         ValidationControl.verifyCustomerExistence(customer);
@@ -32,11 +38,5 @@ public class CancelingService {
         ValidationControl.verifyBookedRoomExistenceByCustomerId(bookedRoomsByCustomer);
         bookedRoomRepository.deleteAll(bookedRoomsByCustomer);
         return (CustomerDTO) DomainToDTOConverter.convertObjToDTO(customer.get(), CustomerDTO.class);
-    }
-
-    public void cancelBookedRoom(final Long bookedRoomId){
-        Optional<BookedRoom> bookedRoom = bookedRoomRepository.findById(bookedRoomId);
-        ValidationControl.verifyBookedRoomExistence(bookedRoom);
-        bookedRoomRepository.delete(bookedRoom.get());
     }
 }

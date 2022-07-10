@@ -2,6 +2,7 @@ package com.cancun.hotel.cancunhotel.service;
 
 import com.cancun.hotel.cancunhotel.DTO.BookedRoomDTO;
 import com.cancun.hotel.cancunhotel.VO.BookedRoomVO;
+import com.cancun.hotel.cancunhotel.VO.ModifyBookedRoomVO;
 import com.cancun.hotel.cancunhotel.domain.BookedRoom;
 import com.cancun.hotel.cancunhotel.domain.Customer;
 import com.cancun.hotel.cancunhotel.domain.Room;
@@ -32,10 +33,11 @@ public class ModifyingService {
         this.checkingService = checkingService;
     }
 
-    public BookedRoomDTO modifyBookedRoom(BookedRoomVO bookedRoomVO){
-        ValidationControl.verifyBookedRoomIdNotNull(bookedRoomVO);
-        Optional<BookedRoom> bookedRoomOptional = bookedRoomRepository.findById(bookedRoomVO.getBooked_room_id());
+    public BookedRoomDTO modifyBookedRoom(ModifyBookedRoomVO modifyBookedRoomVO){
+        ValidationControl.verifyBookedRoomIdNotNull(modifyBookedRoomVO);
+        Optional<BookedRoom> bookedRoomOptional = bookedRoomRepository.findById(modifyBookedRoomVO.getBooked_room_id());
         ValidationControl.verifyBookedRoomExistence(bookedRoomOptional);
+        BookedRoomVO bookedRoomVO = new BookedRoomVO(modifyBookedRoomVO.getRoom_id(), modifyBookedRoomVO.getCustomer_id(), modifyBookedRoomVO.getStartDate(), modifyBookedRoomVO.getEndDate());
         BookedRoom bookedRoom = createBookedRoom(bookedRoomVO, bookedRoomOptional.get());
         bookedRoom = bookedRoomRepository.save(bookedRoom);
         return (BookedRoomDTO) DomainToDTOConverter.convertObjToDTO(bookedRoom, BookedRoomDTO.class);

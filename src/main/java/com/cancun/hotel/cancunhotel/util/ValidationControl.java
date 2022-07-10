@@ -1,6 +1,7 @@
 package com.cancun.hotel.cancunhotel.util;
 
 import com.cancun.hotel.cancunhotel.VO.BookedRoomVO;
+import com.cancun.hotel.cancunhotel.VO.ModifyBookedRoomVO;
 import com.cancun.hotel.cancunhotel.domain.BookedRoom;
 import com.cancun.hotel.cancunhotel.domain.Customer;
 import com.cancun.hotel.cancunhotel.domain.Room;
@@ -40,7 +41,7 @@ public class ValidationControl {
         }
     }
 
-    public static void verifyBookedRoomIdNotNull(BookedRoomVO bookedRoomVO){
+    public static void verifyBookedRoomIdNotNull(ModifyBookedRoomVO bookedRoomVO){
         if(bookedRoomVO.getBooked_room_id() == null){
             throw new ParametersNotValidException(EnumCustomExceptionControl.PARAMETERS_NOT_VALID.getErrorCode());
         }
@@ -96,6 +97,12 @@ public class ValidationControl {
 
     public static void verifyStartAndEndDateNotNull(BookedRoomVO bookedRoomVO) {
         if(bookedRoomVO.getStartDate() == null || bookedRoomVO.getEndDate() == null){
+            throw new ParametersNotValidException(EnumCustomExceptionControl.PARAMETERS_NOT_VALID.getErrorCode());
+        }
+    }
+
+    public static void verifyStartAndEndDateNotNull(LocalDate startDate, LocalDate endDate) {
+        if(startDate == null || endDate == null){
             throw new ParametersNotValidException(EnumCustomExceptionControl.PARAMETERS_NOT_VALID.getErrorCode());
         }
     }

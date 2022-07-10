@@ -10,11 +10,13 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookedRoomVO {
+public class ModifyBookedRoomVO {
 
     private Long room_id;
 
     private Long customer_id;
+
+    private Long booked_room_id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private LocalDate startDate;
