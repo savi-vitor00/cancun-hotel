@@ -9,6 +9,7 @@ import com.cancun.hotel.cancunhotel.repository.BookedRoomRepository;
 import com.cancun.hotel.cancunhotel.repository.CustomerRepository;
 import com.cancun.hotel.cancunhotel.repository.RoomRepository;
 import com.cancun.hotel.cancunhotel.util.DomainToDTOConverter;
+import com.cancun.hotel.cancunhotel.util.ValidationControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,31 +21,32 @@ public class ModifyingService {
     private final BookedRoomRepository bookedRoomRepository;
     private final CustomerRepository customerRepository;
     private final RoomRepository roomRepository;
-    private final ValidationControlService validationControlService;
+    private final CheckingService checkingService;
 
     @Autowired
-    public ModifyingService(BookedRoomRepository bookedRoomRepository, CustomerRepository customerRepository, ValidationControlService validationControlService,
-                                RoomRepository roomRepository){
+    public ModifyingService(BookedRoomRepository bookedRoomRepository, CustomerRepository customerRepository,
+                                RoomRepository roomRepository, CheckingService checkingService){
         this.bookedRoomRepository = bookedRoomRepository;
         this.customerRepository = customerRepository;
         this.roomRepository = roomRepository;
-        this.validationControlService = validationControlService;
+        this.checkingService = checkingService;
     }
 
     public BookedRoomDTO modifyBookedRoom(BookedRoomVO bookedRoomVO){
-        validationControlService.verifyBookedRoomIdNotNull(bookedRoomVO);
+        ValidationControl.verifyBookedRoomIdNotNull(bookedRoomVO);
         Optional<BookedRoom> bookedRoomOptional = bookedRoomRepository.findById(bookedRoomVO.getBooked_room_id());
-        validationControlService.verifyBookedRoomExistence(bookedRoomOptional);
+        ValidationControl.verifyBookedRoomExistence(bookedRoomOptional);
         BookedRoom bookedRoom = createBookedRoom(bookedRoomVO, bookedRoomOptional.get());
         bookedRoom = bookedRoomRepository.save(bookedRoom);
         return (BookedRoomDTO) DomainToDTOConverter.convertObjToDTO(bookedRoom, BookedRoomDTO.class);
     }
 
     private BookedRoom createBookedRoom(BookedRoomVO vo, BookedRoom bookedRoom) {
-        validationControlService.verifyDomainsIdNotNull(vo);
+        ValidationControl.verifyDomainsIdNotNull(vo);
         Optional<Room> room = roomRepository.findById(vo.getRoom_id());
         Optional<Customer> customer = customerRepository.findById(vo.getCustomer_id());
-        validationControlService.verifyRulesForBooking(room, customer, vo);
+        Boolean available = checkingService.checkAvailabilityByDates(vo);
+        ValidationControl.verifyRulesForBooking(room, customer, vo, available);
         compareAndUpdateBookedRoom(bookedRoom, vo, customer);
         return bookedRoom;
     }

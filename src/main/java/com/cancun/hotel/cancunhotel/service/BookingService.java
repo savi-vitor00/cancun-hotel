@@ -9,6 +9,7 @@ import com.cancun.hotel.cancunhotel.repository.BookedRoomRepository;
 import com.cancun.hotel.cancunhotel.repository.CustomerRepository;
 import com.cancun.hotel.cancunhotel.repository.RoomRepository;
 import com.cancun.hotel.cancunhotel.util.DomainToDTOConverter;
+import com.cancun.hotel.cancunhotel.util.ValidationControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +23,19 @@ public class BookingService {
     private final BookedRoomRepository bookedRoomRepository;
     private final CustomerRepository customerRepository;
     private final RoomRepository roomRepository;
-    private final ValidationControlService validationControlService;
+    private final CheckingService checkingService;
 
     @Autowired
-    public BookingService(BookedRoomRepository bookedRoomRepository, CustomerRepository customerRepository, RoomRepository roomRepository,
-                          ValidationControlService validationControlService){
+    public BookingService(BookedRoomRepository bookedRoomRepository, CustomerRepository customerRepository, RoomRepository roomRepository, CheckingService checkingService){
         this.bookedRoomRepository = bookedRoomRepository;
         this.customerRepository = customerRepository;
         this.roomRepository = roomRepository;
-        this.validationControlService = validationControlService;
+        this.checkingService = checkingService;
     }
 
     public List<BookedRoomDTO> listAllBookings(){
         List<BookedRoom> bookedRooms = bookedRoomRepository.findAll();
-        validationControlService.verifyBookedRoomsExistence(bookedRooms);
+        ValidationControl.verifyBookedRoomsExistence(bookedRooms);
         List<BookedRoomDTO> bookedRoomDTOS = new ArrayList<>();
         for (BookedRoom bookedRoom : bookedRooms) {
             BookedRoomDTO bookedRoomDTO = (BookedRoomDTO) DomainToDTOConverter.convertObjToDTO(bookedRoom, BookedRoomDTO.class);
@@ -46,9 +46,9 @@ public class BookingService {
 
     public List<BookedRoomDTO> listBookingByCustomerId(final Long customerId){
         Optional<Customer> customer = customerRepository.findById(customerId);
-        validationControlService.verifyCustomerExistence(customer);
+        ValidationControl.verifyCustomerExistence(customer);
         List<BookedRoom> bookedRooms = bookedRoomRepository.findAllByCustomer(customer.get());
-        validationControlService.verifyBookedRoomExistenceByCustomerId(bookedRooms);
+        ValidationControl.verifyBookedRoomExistenceByCustomerId(bookedRooms);
         List<BookedRoomDTO> bookedRoomDTOS = new ArrayList<>();
         for (BookedRoom bookedRoom : bookedRooms) {
             BookedRoomDTO bookedRoomDTO = (BookedRoomDTO) DomainToDTOConverter.convertObjToDTO(bookedRoom, BookedRoomDTO.class);
@@ -64,10 +64,11 @@ public class BookingService {
     }
 
     private BookedRoom createBookedRoom(BookedRoomVO vo) {
-        validationControlService.verifyDomainsIdNotNull(vo);
+        ValidationControl.verifyDomainsIdNotNull(vo);
         Optional<Room> room = roomRepository.findById(vo.getRoom_id());
         Optional<Customer> customer = customerRepository.findById(vo.getCustomer_id());
-        validationControlService.verifyRulesForBooking(room, customer, vo);
+        Boolean available = checkingService.checkAvailabilityByDates(vo);
+        ValidationControl.verifyRulesForBooking(room, customer, vo, available);
         BookedRoom bookedRoom = buildBookedRoomObject(vo, room, customer);
         return bookedRoomRepository.save(bookedRoom);
     }

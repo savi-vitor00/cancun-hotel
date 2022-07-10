@@ -1,4 +1,4 @@
-package com.cancun.hotel.cancunhotel.service;
+package com.cancun.hotel.cancunhotel.util;
 
 import com.cancun.hotel.cancunhotel.VO.BookedRoomVO;
 import com.cancun.hotel.cancunhotel.domain.BookedRoom;
@@ -13,106 +13,94 @@ import com.cancun.hotel.cancunhotel.exception.StartDateBeforeTomorrowException;
 import com.cancun.hotel.cancunhotel.exception.ThirtyDaysAdvanceBookingException;
 import com.cancun.hotel.cancunhotel.exception.ThreePlusDaysBookingException;
 import com.cancun.hotel.cancunhotel.exception.util.EnumCustomExceptionControl;
-import com.cancun.hotel.cancunhotel.repository.BookedRoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class ValidationControlService {
+public class ValidationControl {
 
-    private final CheckingService checkingService;
+    private static final Integer MAX_LIMIT_ADVANCE_BOOKING = 30;
 
-    private final Integer MAX_LIMIT_ADVANCE_BOOKING = 29;
-
-    @Autowired
-    public ValidationControlService(CheckingService checkingService){
-        this.checkingService = checkingService;
-    }
-
-    public void verifyRulesForBooking(Optional<Room> room, Optional<Customer> customer, BookedRoomVO bookedRoomVO) {
+    public static void verifyRulesForBooking(Optional<Room> room, Optional<Customer> customer, BookedRoomVO bookedRoomVO, Boolean available) {
         LocalDate now = LocalDate.now();
+        verifyAvailablePeriodsForBooking(available);
         verifyStartAndEndDateNotNull(bookedRoomVO);
         verifyStartDateValid(bookedRoomVO, now);
         verifyAdvanceBookingLimit(bookedRoomVO, now);
         verifyMaxDaysLimitOfStay(bookedRoomVO);
         verifyRoomExistence(room);
         verifyCustomerExistence(customer);
-        verifyAvailablePeriodsForBooking(bookedRoomVO);
     }
 
-    public void verifyDomainsIdNotNull(BookedRoomVO bookedRoomVO){
+    public static void verifyDomainsIdNotNull(BookedRoomVO bookedRoomVO){
         if(bookedRoomVO.getRoom_id() == null || bookedRoomVO.getCustomer_id() == null){
             throw new ParametersNotValidException(EnumCustomExceptionControl.PARAMETERS_NOT_VALID.getErrorCode());
         }
     }
 
-    public void verifyBookedRoomIdNotNull(BookedRoomVO bookedRoomVO){
+    public static void verifyBookedRoomIdNotNull(BookedRoomVO bookedRoomVO){
         if(bookedRoomVO.getBooked_room_id() == null){
             throw new ParametersNotValidException(EnumCustomExceptionControl.PARAMETERS_NOT_VALID.getErrorCode());
         }
     }
 
-    private void verifyMaxDaysLimitOfStay(BookedRoomVO bookedRoomVO) {
+    private static void verifyMaxDaysLimitOfStay(BookedRoomVO bookedRoomVO) {
         if(bookedRoomVO.getStartDate().until(bookedRoomVO.getEndDate(), ChronoUnit.DAYS) > 3){
             throw new ThreePlusDaysBookingException(EnumCustomExceptionControl.THREE_PLUS_DAYS.getErrorCode());
         }
     }
 
-    private void verifyAdvanceBookingLimit(BookedRoomVO bookedRoomVO, LocalDate now) {
+    private static void verifyAdvanceBookingLimit(BookedRoomVO bookedRoomVO, LocalDate now) {
         if(now.until(bookedRoomVO.getStartDate(), ChronoUnit.DAYS) > MAX_LIMIT_ADVANCE_BOOKING){
             throw new ThirtyDaysAdvanceBookingException(EnumCustomExceptionControl.THIRTY_DAYS_ADVANCE.getErrorCode());
         }
     }
 
-    private void verifyAvailablePeriodsForBooking(BookedRoomVO bookedRoomVO) {
-        Boolean available = checkingService.checkAvailabilityByDates(bookedRoomVO);
+    private static void verifyAvailablePeriodsForBooking(Boolean available) {
         if(!available){
             throw new PeriodNotAvailableException(EnumCustomExceptionControl.PERIOD_NOT_AVAILABLE.getErrorCode());
         }
     }
 
-    public void verifyCustomerExistence(Optional<Customer> customer) {
+    public static void verifyCustomerExistence(Optional<Customer> customer) {
         if(!customer.isPresent()){
             throw new CustomerNotFoundException(EnumCustomExceptionControl.CUSTOMER_NOT_FOUND.getErrorCode());
         }
     }
 
-    public void verifyBookedRoomExistenceByCustomerId(List<BookedRoom> bookedRooms){
+    public static void verifyBookedRoomExistenceByCustomerId(List<BookedRoom> bookedRooms){
         if(bookedRooms.isEmpty()){
             throw new BookedRoomNotFoundException(EnumCustomExceptionControl.BOOKED_ROOM_NOT_FOUND_C.getErrorCode());
         }
     }
 
-    public void verifyBookedRoomsExistence(List<BookedRoom> bookedRooms){
+    public static void verifyBookedRoomsExistence(List<BookedRoom> bookedRooms){
         if(bookedRooms.isEmpty()){
             throw new BookedRoomNotFoundException(EnumCustomExceptionControl.BOOKED_ROOM_NOT_FOUND.getErrorCode());
         }
     }
 
-    public void verifyBookedRoomExistence(Optional<BookedRoom> bookedRoom){
+    public static void verifyBookedRoomExistence(Optional<BookedRoom> bookedRoom){
         if(!bookedRoom.isPresent()){
             throw new BookedRoomNotFoundException(EnumCustomExceptionControl.BOOKED_ROOM_NOT_FOUND.getErrorCode());
         }
     }
 
-    private void verifyRoomExistence(Optional<Room> room) {
+    private static void verifyRoomExistence(Optional<Room> room) {
         if(!room.isPresent()){
             throw new RoomNotFoundException(EnumCustomExceptionControl.ROOM_NOT_FOUND.getErrorCode());
         }
     }
 
-    public void verifyStartAndEndDateNotNull(BookedRoomVO bookedRoomVO) {
+    public static void verifyStartAndEndDateNotNull(BookedRoomVO bookedRoomVO) {
         if(bookedRoomVO.getStartDate() == null || bookedRoomVO.getEndDate() == null){
             throw new ParametersNotValidException(EnumCustomExceptionControl.PARAMETERS_NOT_VALID.getErrorCode());
         }
     }
 
-    private void verifyStartDateValid(BookedRoomVO bookedRoomVO, LocalDate now) {
+    private static void verifyStartDateValid(BookedRoomVO bookedRoomVO, LocalDate now) {
         if(bookedRoomVO.getStartDate().isBefore(now.plus(1, ChronoUnit.DAYS))){
             throw new StartDateBeforeTomorrowException(EnumCustomExceptionControl.START_DATE_BEF_TOMOR.getErrorCode());
         }

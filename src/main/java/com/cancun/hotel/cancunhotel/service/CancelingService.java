@@ -6,6 +6,7 @@ import com.cancun.hotel.cancunhotel.domain.Customer;
 import com.cancun.hotel.cancunhotel.repository.BookedRoomRepository;
 import com.cancun.hotel.cancunhotel.repository.CustomerRepository;
 import com.cancun.hotel.cancunhotel.util.DomainToDTOConverter;
+import com.cancun.hotel.cancunhotel.util.ValidationControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,27 +18,25 @@ public class CancelingService {
 
     private final BookedRoomRepository bookedRoomRepository;
     private final CustomerRepository customerRepository;
-    private final ValidationControlService validationControlService;
 
     @Autowired
-    public CancelingService(BookedRoomRepository bookedRoomRepository, CustomerRepository customerRepository, ValidationControlService validationControlService){
+    public CancelingService(BookedRoomRepository bookedRoomRepository, CustomerRepository customerRepository){
         this.bookedRoomRepository = bookedRoomRepository;
         this.customerRepository = customerRepository;
-        this.validationControlService = validationControlService;
     }
 
     public CustomerDTO cancelAllBookedRoomByUser(final Long customerId){
         Optional<Customer> customer = customerRepository.findById(customerId);
-        validationControlService.verifyCustomerExistence(customer);
+        ValidationControl.verifyCustomerExistence(customer);
         List<BookedRoom> bookedRoomsByCustomer = bookedRoomRepository.findAllByCustomer(customer.get());
-        validationControlService.verifyBookedRoomExistenceByCustomerId(bookedRoomsByCustomer);
+        ValidationControl.verifyBookedRoomExistenceByCustomerId(bookedRoomsByCustomer);
         bookedRoomRepository.deleteAll(bookedRoomsByCustomer);
         return (CustomerDTO) DomainToDTOConverter.convertObjToDTO(customer.get(), CustomerDTO.class);
     }
 
     public void cancelBookedRoom(final Long bookedRoomId){
         Optional<BookedRoom> bookedRoom = bookedRoomRepository.findById(bookedRoomId);
-        validationControlService.verifyBookedRoomExistence(bookedRoom);
+        ValidationControl.verifyBookedRoomExistence(bookedRoom);
         bookedRoomRepository.delete(bookedRoom.get());
     }
 }

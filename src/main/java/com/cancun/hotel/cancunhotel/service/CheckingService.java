@@ -6,6 +6,7 @@ import com.cancun.hotel.cancunhotel.VO.UnavailablePeriodsVO;
 import com.cancun.hotel.cancunhotel.domain.BookedRoom;
 import com.cancun.hotel.cancunhotel.repository.BookedRoomRepository;
 import com.cancun.hotel.cancunhotel.util.DomainToDTOConverter;
+import com.cancun.hotel.cancunhotel.util.ValidationControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +20,15 @@ import java.util.Map;
 public class CheckingService {
 
     private final BookedRoomRepository bookedRoomRepository;
-    private final ValidationControlService validationControlService;
 
     @Autowired
-    public CheckingService(BookedRoomRepository bookedRoomRepository, ValidationControlService validationControlService){
+    public CheckingService(BookedRoomRepository bookedRoomRepository){
         this.bookedRoomRepository = bookedRoomRepository;
-        this.validationControlService = validationControlService;
     }
 
     public UnavailablePeriodsVO checkAvailability(){
         List<BookedRoom> bookedRoomList = bookedRoomRepository.findAll();
-        validationControlService.verifyBookedRoomsExistence(bookedRoomList);
+        ValidationControl.verifyBookedRoomsExistence(bookedRoomList);
         UnavailablePeriodsVO unavailablePeriodsVO = new UnavailablePeriodsVO();
         unavailablePeriodsVO.setUnavailableDates(new HashMap<>());
         for (BookedRoom bookedRoom : bookedRoomList) {
@@ -42,7 +41,7 @@ public class CheckingService {
     }
 
     public Boolean checkAvailabilityByDates(BookedRoomVO bookedRoomVO){
-        validationControlService.verifyStartAndEndDateNotNull(bookedRoomVO);
+        ValidationControl.verifyStartAndEndDateNotNull(bookedRoomVO);
         Integer periodsFound = bookedRoomRepository.checkUnavailabilityByStartAndEndDates(bookedRoomVO.getStartDate(), bookedRoomVO.getEndDate());
         if(periodsFound > 0){
             return Boolean.FALSE;
@@ -51,9 +50,9 @@ public class CheckingService {
     }
 
     public List<BookedRoomDTO> listAvailabilityByDates(BookedRoomVO bookedRoomVO){
-        validationControlService.verifyStartAndEndDateNotNull(bookedRoomVO);
+        ValidationControl.verifyStartAndEndDateNotNull(bookedRoomVO);
         List<BookedRoom> periodsFound = bookedRoomRepository.listUnavailabilityByStartAndEndDates(bookedRoomVO.getStartDate(), bookedRoomVO.getEndDate());
-        validationControlService.verifyBookedRoomsExistence(periodsFound);
+        ValidationControl.verifyBookedRoomsExistence(periodsFound);
         List<BookedRoomDTO> bookedRoomDTOS = new ArrayList<>();
         for (BookedRoom bookedRoom : periodsFound) {
             BookedRoomDTO bookedRoomDTO = (BookedRoomDTO) DomainToDTOConverter.convertObjToDTO(bookedRoom, BookedRoomDTO.class);
