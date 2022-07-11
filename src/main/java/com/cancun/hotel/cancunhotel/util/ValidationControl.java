@@ -26,13 +26,13 @@ public class ValidationControl {
 
     public static void verifyRulesForBooking(Optional<Room> room, Optional<Customer> customer, BookedRoomVO bookedRoomVO, Boolean available) {
         LocalDate now = LocalDate.now();
-        verifyAvailablePeriodsForBooking(available);
-        verifyStartAndEndDateNotNull(bookedRoomVO);
         verifyStartDateValid(bookedRoomVO, now);
-        verifyAdvanceBookingLimit(bookedRoomVO, now);
         verifyMaxDaysLimitOfStay(bookedRoomVO);
+        verifyStartAndEndDateNotNull(bookedRoomVO);
+        verifyAdvanceBookingLimit(bookedRoomVO, now);
         verifyRoomExistence(room);
         verifyCustomerExistence(customer);
+        verifyAvailablePeriodsForBooking(available);
     }
 
     public static void verifyDomainsIdNotNull(BookedRoomVO bookedRoomVO){
