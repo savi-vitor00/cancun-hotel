@@ -7,3 +7,9 @@
 - 4 - Modify bookings
 - 5 - Cancel bookings
 
+#### Booking rules:
+- The hotel has only one room available.
+- the stay can’t be longer than 3 days.
+- the stay can’t be reserved more than 30 days in advance.
+-  All reservations start at least the next day of booking.
+
