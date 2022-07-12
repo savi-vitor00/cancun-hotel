@@ -36,7 +36,7 @@ public class CancelingController {
     }
 
     @DeleteMapping("/allByCustomer/{customerId}")
-    @ApiOperation(value = "${CancelingController.cancelBookedRoom.name}")
+    @ApiOperation(value = "${CancelingController.cancelAllBookedRoomByUser.name}")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully canceled bookings"),
             @ApiResponse(code = 404, message = "Not found exception")})
     public ResponseEntity cancelAllBookedRoomByUser(@PathVariable("customerId") Long customerId){
