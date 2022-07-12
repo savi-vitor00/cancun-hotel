@@ -13,6 +13,10 @@
 - the stay can’t be reserved more than 30 days in advance.
 -  All reservations start at least the next day of booking.
 
+
+#### API Usage and full payloads information can be found here:
+- First, run the app. Then, go to [](http://localhost:8080/swagger-ui/)
+
 #### API Structure:
 - Initialize Hotel Controller -> As we're using H2 Database with "hibernate.ddl-auto:drop/create", this endpoint is required everytime the application is started/restarted
   - ![image](https://user-images.githubusercontent.com/53449344/178472792-cdb8e98b-7887-4d5c-9a6e-8780625e462e.png)
