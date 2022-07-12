@@ -1,2 +1,2 @@
-# cancun-hotel
-cancun-hotel-api
+# Booking Management App for cancun-hotel
+
