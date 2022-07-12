@@ -34,3 +34,9 @@
 - Canceling Controller -> Responsable for canceling bookings by id, and every booking by user:
   - ![image](https://user-images.githubusercontent.com/53449344/178474657-f25c3065-32f9-434c-bdd0-204e9e0486bc.png)
 
+
+- All controllers and services are 100% covered by tests.
+  - ![image](https://user-images.githubusercontent.com/53449344/178476358-4d6136d5-c0c9-4f2c-ad17-5901d7cda01e.png)
+  - ![image](https://user-images.githubusercontent.com/53449344/178476396-304e55b4-530c-4672-bf71-4159b35c30da.png)
+
+
