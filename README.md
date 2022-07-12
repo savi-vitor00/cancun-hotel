@@ -19,7 +19,5 @@
   - ![image](https://user-images.githubusercontent.com/53449344/178473163-045f393f-eb15-4d45-972c-d31312bfeebf.png)
 
  
-- CheckingController -> Has three different responses for the same purpose:
-  - 1 - Returns an UnavailablePeriodsVO, which has the occupied dates for each costumer, or a "No booking was found." when none exists.
-  - 2 - A simpler methods with 2 differents String responses; "No booking was found for the given period." and "The room is already booked at given period.".
-  - 
+- CheckingController -> Has three different responses for bookings searchs:
+  - ![image](https://user-images.githubusercontent.com/53449344/178473404-dd04e457-6229-4c8f-85af-7192df1d113d.png)
