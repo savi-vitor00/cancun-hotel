@@ -15,7 +15,7 @@
 
 #### API Structure:
 - InitializeController -> As we're using H2 Database with "hibernate.ddl-auto:drop/create", this endpoint is required everytime the application is started/restarted
-  -![image](https://user-images.githubusercontent.com/53449344/178472792-cdb8e98b-7887-4d5c-9a6e-8780625e462e.png)
+  - ![image](https://user-images.githubusercontent.com/53449344/178472792-cdb8e98b-7887-4d5c-9a6e-8780625e462e.png)
  
 - CheckingController -> Has three different responses for the same purpose:
   - 1 - Returns an UnavailablePeriodsVO, which has the occupied dates for each costumer, or a "No booking was found." when none exists.
